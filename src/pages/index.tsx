@@ -1,24 +1,15 @@
 import * as React from 'react';
 
+import Button from '@/components/buttons/Button';
 import Layout from '@/components/layout/Layout';
-import ArrowLink from '@/components/links/ArrowLink';
-import ButtonLink from '@/components/links/ButtonLink';
-import UnderlineLink from '@/components/links/UnderlineLink';
-import UnstyledLink from '@/components/links/UnstyledLink';
+import NextImage from '@/components/NextImage';
 import Seo from '@/components/Seo';
 
-/**
- * SVGR Support
- * Caveat: No React Props Type.
- *
- * You can override the next-env if the type is important to you
- * @see https://stackoverflow.com/questions/68103844/how-to-override-next-js-svg-module-declaration
- */
-import Vercel from '~/svg/Vercel.svg';
-
-// !STARTERCONF -> Select !STARTERCONF and CMD + SHIFT + F
-// Before you begin editing, follow all comments with `STARTERCONF`,
-// to customize the default configuration.
+import Logo from '~/svg/facement-logo.svg';
+import ManStandOutSVG from '~/svg/man-stand-out.svg';
+import Work1SVG from '~/svg/work1.svg';
+import Work2SVG from '~/svg/work2.svg';
+import Work3SVG from '~/svg/work3.svg';
 
 export default function HomePage() {
   return (
@@ -27,45 +18,94 @@ export default function HomePage() {
       <Seo />
 
       <main>
-        <section className='bg-white'>
-          <div className='layout flex min-h-screen flex-col items-center justify-center text-center'>
-            <Vercel className='text-5xl' />
-            <h1 className='mt-4'>
-              Next.js + Tailwind CSS + TypeScript Starter
-            </h1>
-            <p className='mt-2 text-sm text-gray-800'>
-              A starter for Next.js, Tailwind CSS, and TypeScript with Absolute
-              Import, Seo, Link component, pre-configured with Husky{' '}
-            </p>
-            <p className='mt-2 text-sm text-gray-700'>
-              <ArrowLink href='https://github.com/theodorusclarence/ts-nextjs-tailwind-starter'>
-                See the repository
-              </ArrowLink>
-            </p>
-
-            <ButtonLink className='mt-6' href='/components' variant='light'>
-              See all components
-            </ButtonLink>
-
-            <UnstyledLink
-              href='https://vercel.com/new/git/external?repository-url=https%3A%2F%2Fgithub.com%2Ftheodorusclarence%2Fts-nextjs-tailwind-starter'
-              className='mt-4'
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                width='92'
-                height='32'
-                src='https://vercel.com/button'
-                alt='Deploy with Vercel'
+        <div className='flex h-screen flex-col bg-primary-500'>
+          <nav className='layout flex h-16 items-center justify-between py-4 '>
+            <Logo className='h-11 text-9xl' />
+            <Button variant='outline'>Sign in</Button>
+          </nav>
+          <section className='flex h-full items-center'>
+            <div className='layout flex flex-col space-y-5 md:flex-row-reverse md:items-center md:justify-between'>
+              <NextImage
+                className='relative h-[250px] md:h-[300px] md:w-1/2 lg:h-[400px]'
+                src='/images/hero-image.png'
+                layout='fill'
+                objectFit='contain'
               />
-            </UnstyledLink>
-
-            <footer className='absolute bottom-2 text-gray-700'>
-              © {new Date().getFullYear()} By{' '}
-              <UnderlineLink href='https://theodorusclarence.com?ref=tsnextstarter'>
-                Theodorus Clarence
-              </UnderlineLink>
-            </footer>
+              <div className='space-y-4 text-center md:w-2/5 md:space-y-8 md:text-left'>
+                <h1 className='font-bold text-white lg:text-5xl'>
+                  Easy face scan to pay your needs.
+                </h1>
+                <h3 className='font-secondary text-white'>
+                  Simple e-wallet with face recognition
+                </h3>
+                <div className='flex flex-col space-y-3 md:flex-row md:space-y-0 md:space-x-6'>
+                  <Button variant='secondary'>Create an account</Button>
+                  <Button variant='outline'>How it Works</Button>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+        <section className='relative overflow-hidden bg-[#F1F3FA] py-[100px] sm:py-[200px]'>
+          <div className='layout z-10 space-y-5 lg:space-y-8 '>
+            <h1 className='font-semibold lg:text-5xl'>Try Our Demo</h1>
+            <p className='max-w-xs sm:max-w-sm'>
+              Be the first to try our e-wallet account with face payment demo by
+              creating your account
+            </p>
+            <Button variant='primary'>Create an account</Button>
+          </div>
+          <ManStandOutSVG
+            className='absolute bottom-[-100px] right-[-100px] z-0 h-[200px] w-full
+          max-w-md sm:top-[100px] sm:right-[-100px] sm:h-[400px] md:right-[-20px] lg:right-[150px] lg:h-[400px] lg:max-w-xl '
+          />
+        </section>
+        <section className='bg-primary-500'>
+          <div className='layout space-y-12 py-16 text-white'>
+            <h1 className='text-center sm:mb-14 md:mb-24 lg:mb-28'>
+              How Facement Works
+            </h1>
+            <div className='md:jus flex flex-col space-y-5 md:flex-row md:items-center'>
+              <div className='md:w-1/2'>
+                <Work1SVG className='h-[200px] w-full md:h-[300px]' />
+              </div>
+              <div className='md:w-1/2 lg:max-w-md'>
+                <h2 className='mb-4'>Create your account</h2>
+                <p>
+                  Your account will be a place for you to store your e-wallet.
+                  In this step, we will ask you to take a picture of yourself.
+                  Later on, your picture will be used for validation when you
+                  did a transaction
+                </p>
+              </div>
+            </div>
+            <div className='md:jus flex flex-col space-y-5 md:flex-row-reverse md:items-center'>
+              <div className='md:w-1/2'>
+                <Work2SVG className='h-[200px] w-full md:h-[300px]' />
+              </div>
+              <div className='md:w-1/2 lg:max-w-md'>
+                <h2 className='mb-4'>Top up</h2>
+                <p>
+                  After you created an account, you need to top up your e-wallet
+                  to enable you to pay cashlessly. In this demo, the Top-Up is
+                  not real! So you don&apos;t need to spend your real money.
+                </p>
+              </div>
+            </div>
+            <div className='md:jus flex flex-col space-y-5 md:flex-row md:items-center'>
+              <div className='md:w-1/2'>
+                <Work3SVG className='h-[180px] w-full md:h-[280px]' />
+              </div>
+              <div className='md:w-1/2 lg:max-w-md'>
+                <h2 className='mb-4'>Create your account</h2>
+                <p>
+                  Your account will be a place for you to store your e-wallet.
+                  In this step, we will ask you to take a picture of yourself.
+                  Later on, your picture will be used for validation when you
+                  did a transaction
+                </p>
+              </div>
+            </div>
           </div>
         </section>
       </main>
