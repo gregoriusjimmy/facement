@@ -1,38 +1,35 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-const { fontFamily } = require('tailwindcss/defaultTheme');
-
-function withOpacityValue(variable) {
-  return ({ opacityValue }) => {
-    if (opacityValue === undefined) {
-      return `rgb(var(${variable}))`;
-    }
-    return `rgb(var(${variable}) / ${opacityValue})`;
-  };
-}
-
 /** @type {import("@types/tailwindcss/tailwind-config").TailwindConfig } */
 module.exports = {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
   theme: {
     extend: {
       fontFamily: {
-        primary: ['Inter', ...fontFamily.sans],
+        primary: ['Montserrat', 'sans-serif'],
+        secondary: ['Open Sans', 'sans-serif'],
       },
       colors: {
         primary: {
-          // Customize it on globals.css :root
-          50: withOpacityValue('--tw-color-primary-50'),
-          100: withOpacityValue('--tw-color-primary-100'),
-          200: withOpacityValue('--tw-color-primary-200'),
-          300: withOpacityValue('--tw-color-primary-300'),
-          400: withOpacityValue('--tw-color-primary-400'),
-          500: withOpacityValue('--tw-color-primary-500'),
-          600: withOpacityValue('--tw-color-primary-600'),
-          700: withOpacityValue('--tw-color-primary-700'),
-          800: withOpacityValue('--tw-color-primary-800'),
-          900: withOpacityValue('--tw-color-primary-900'),
+          100: '#dce1f6',
+          200: '#b8c3ec',
+          300: '#95a5e3',
+          400: '#7187d9',
+          500: '#4e69d0',
+          600: '#3e54a6',
+          700: '#2f3f7d',
+          800: '#1f2a53',
+          900: '#10152a',
         },
-        dark: '#222222',
+        secondary: {
+          100: '#fcd5dc',
+          200: '#f9abb8',
+          300: '#f68295',
+          400: '#f35871',
+          500: '#f02e4e',
+          600: '#c0253e',
+          700: '#901c2f',
+          800: '#60121f',
+          900: '#300910',
+        },
       },
       keyframes: {
         flicker: {
@@ -61,5 +58,4 @@ module.exports = {
       },
     },
   },
-  plugins: [require('@tailwindcss/forms')],
 };
