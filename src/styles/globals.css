@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --color-primary-500: #4e69d0;
+  --color-primary-400: #7187d9;
+  --white-bg: #fdfdfd;
+}
+
 @layer base {
   /* inter var - latin */
 
@@ -80,9 +86,4 @@
   .animated-underline:focus-visible {
     background-size: 0 2px, 100% 2px;
   }
-}
-
-:root {
-  --primary-color: #4e69d0;
-  --white-bg: #fdfdfd;
 }
