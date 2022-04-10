@@ -62,8 +62,18 @@
     @apply min-h-[calc(100vh-56px)];
   }
 }
-
+@layer components {
+  .card {
+    @apply w-full max-w-sm rounded border p-5 shadow-lg md:max-w-lg md:p-10;
+  }
+}
 @layer utilities {
+  input[type='number']::-webkit-inner-spin-button,
+  input[type='number']::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
   .animated-underline {
     background-image: linear-gradient(#33333300, #33333300),
       linear-gradient(

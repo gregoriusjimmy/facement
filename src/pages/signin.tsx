@@ -1,7 +1,7 @@
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 
 import Button from '@/components/buttons/Button';
-import InputField from '@/components/InputField';
+import InputField from '@/components/input-field/InputField';
 import Layout from '@/components/layout/Layout';
 import PrimaryLink from '@/components/links/PrimaryLink';
 import Seo from '@/components/Seo';
@@ -19,7 +19,7 @@ export default function SignInPage() {
           className='layout flex h-full flex-col items-center 
       justify-center md:flex-row md:justify-start '
         >
-          <form className='w-full max-w-sm rounded border p-5 shadow-lg md:max-w-md md:p-10'>
+          <form className='card w-full'>
             <h3 className='mb-8 text-center md:mb-10'>
               Sign in into your account
             </h3>
