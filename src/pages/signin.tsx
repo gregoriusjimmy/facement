@@ -14,9 +14,9 @@ export default function SignInPage() {
   return (
     <Layout>
       <Seo />
-      <main className='relative h-[90vh] overflow-hidden'>
+      <main className='relative overflow-hidden'>
         <div
-          className='layout flex h-full flex-col items-center 
+          className='layout min-h-main flex flex-col items-center 
       justify-center md:flex-row md:justify-start '
         >
           <form className='card w-full'>

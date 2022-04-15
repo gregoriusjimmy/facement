@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import Button from '@/components/buttons/Button';
 import Layout from '@/components/layout/Layout';
+import ButtonLink from '@/components/links/ButtonLink';
 import NextImage from '@/components/NextImage';
 import Seo from '@/components/Seo';
 
@@ -15,8 +16,8 @@ export default function HomePage() {
     <Layout>
       <Seo />
       <main>
-        <div className='flex h-[92vh] flex-col bg-primary-500'>
-          <section className='flex h-full items-center'>
+        <div className='flex h-full flex-col bg-primary-500'>
+          <section className='min-h-main flex items-center'>
             <div className='layout flex flex-col space-y-5 md:flex-row-reverse md:items-center md:justify-between'>
               <NextImage
                 className='relative h-[250px] md:h-[300px] md:w-1/2 lg:h-[400px]'
@@ -32,7 +33,9 @@ export default function HomePage() {
                   Simple e-wallet with face recognition
                 </h3>
                 <div className='flex flex-col space-y-3 md:flex-row md:space-y-0 md:space-x-6'>
-                  <Button variant='secondary'>Create an account</Button>
+                  <ButtonLink href='/signup' variant='secondary'>
+                    Create an account
+                  </ButtonLink>
                   <Button variant='outline'>How it Works</Button>
                 </div>
               </div>
