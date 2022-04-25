@@ -9,11 +9,11 @@ import UnstyledLink from '../links/UnstyledLink';
 import Logo from '~/svg/facement-logo.svg';
 import LogoBlue from '~/svg/facement-logo-primary.svg';
 export default function Layout({ children }: { children: React.ReactNode }) {
+  const mustLoginRoute = ['/account', '/demo'];
   const router = useRouter();
-  // Put Header or Footer Here
   return (
     <div>
-      {router.pathname === '/account' ? (
+      {mustLoginRoute.includes(router.pathname) ? (
         <div className='bg-white'>
           <nav className='layout flex h-20 items-center justify-between py-4'>
             <UnstyledLink href='/'>
