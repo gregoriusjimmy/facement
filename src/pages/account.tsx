@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import Button from '@/components/buttons/Button';
 import Layout from '@/components/layout/Layout';
+import ButtonLink from '@/components/links/ButtonLink';
 import { Modal } from '@/components/modal/modal';
 import Seo from '@/components/Seo';
 
@@ -25,7 +26,7 @@ export default function AccountPage() {
         </div>
       </Modal>
       <main className='layout'>
-        <div className='md:min-h-main  flex flex-col space-y-10 md:flex-row md:items-center'>
+        <div className='mb-4 flex flex-col space-y-10 md:flex-row md:items-center'>
           <div className='flex flex-col md:w-1/2'>
             <h3 className='mb-2'>Balance</h3>
             <h1 className='mb-4 text-7xl font-bold text-primary-500'>$150</h1>
@@ -40,6 +41,9 @@ export default function AccountPage() {
           <div>
             <h3>Transactions History</h3>
           </div>
+        </div>
+        <div className='flex justify-center'>
+          <ButtonLink href='/demo'>TRY FACE PAYMENT DEMO</ButtonLink>
         </div>
       </main>
     </Layout>
