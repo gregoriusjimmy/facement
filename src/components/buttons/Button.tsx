@@ -1,7 +1,7 @@
-import * as React from 'react';
-import { ImSpinner2 } from 'react-icons/im';
+import * as React from 'react'
+import { ImSpinner2 } from 'react-icons/im'
 
-import clsxm from '@/lib/clsxm';
+import clsxm from '@/lib/clsxm'
 
 enum ButtonVariant {
   'primary',
@@ -13,10 +13,10 @@ enum ButtonVariant {
 }
 
 type ButtonProps = {
-  isLoading?: boolean;
-  isDarkBg?: boolean;
-  variant?: keyof typeof ButtonVariant;
-} & React.ComponentPropsWithRef<'button'>;
+  isLoading?: boolean
+  isDarkBg?: boolean
+  variant?: keyof typeof ButtonVariant
+} & React.ComponentPropsWithRef<'button'>
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
@@ -31,7 +31,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref
   ) => {
-    const disabled = isLoading || buttonDisabled;
+    const disabled = isLoading || buttonDisabled
 
     return (
       <button
@@ -76,7 +76,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             variant === 'light' && [
               'text-dark bg-white ',
               'border border-gray-300',
-              'hover:text-dark hover:bg-gray-100',
+              'hover:text-dark hover:bg-gray-50',
               'active:bg-white/80 disabled:bg-gray-200',
             ],
             variant === 'dark' && [
@@ -109,8 +109,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         )}
         {children}
       </button>
-    );
+    )
   }
-);
+)
 
-export default Button;
+export default Button

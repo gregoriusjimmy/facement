@@ -1,4 +1,5 @@
 import { AppProps } from 'next/app';
+import '../configs/axiosConfig';
 
 import '@/styles/globals.css';
 
