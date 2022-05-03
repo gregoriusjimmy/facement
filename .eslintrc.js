@@ -14,7 +14,7 @@ module.exports = {
   ],
   rules: {
     'no-unused-vars': 'off',
-    'no-console': 'warn',
+    'no-console': ['warn', { allow: ['error'] }],
     '@typescript-eslint/explicit-module-boundary-types': 'off',
 
     'react/display-name': 'off',
@@ -80,4 +80,4 @@ module.exports = {
     React: true,
     JSX: true,
   },
-};
+}
