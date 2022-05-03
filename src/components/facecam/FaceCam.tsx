@@ -8,16 +8,20 @@ import NextImage from '../NextImage'
 import { Spinner } from '../spinner/Spinner'
 
 type Props = {
-  className?: string
-  withOverlay?: boolean
+  isConfirmLoading?: boolean
   handleCapture: (imageSrc: string) => void
   handleConfirm: () => void
+  handleTryAgain?: () => void
+  className?: string
+  withOverlay?: boolean
 }
 
 const FaceCam = ({
   withOverlay = true,
+  isConfirmLoading,
   className,
   handleCapture,
+  handleTryAgain,
   handleConfirm,
 }: Props) => {
   const [photo, setPhoto] = useState('')
@@ -37,6 +41,11 @@ const FaceCam = ({
     handleCapture(imageSrc)
   }, [webcamRef, handleCapture])
 
+  const onTryAgain = () => {
+    setIsWebcamLoaded(false)
+    setPhoto('')
+    handleTryAgain && handleTryAgain()
+  }
   return (
     <div
       className={clsxm(
@@ -50,7 +59,7 @@ const FaceCam = ({
             src={photo}
             layout='fill'
             objectFit='contain'
-            className='min-h-[300px] w-full'
+            className='relative min-h-[300px] w-full'
           />
         )}
         {!photo && (
@@ -81,22 +90,27 @@ const FaceCam = ({
       {photo && (
         <div className='flex w-full flex-col items-center space-y-2'>
           <Button
-            onClick={() => {
-              setIsWebcamLoaded(false)
-              setPhoto('')
-            }}
+            onClick={onTryAgain}
             variant='light'
             className='w-full max-w-sm'
           >
             Try again
           </Button>
-          <Button onClick={handleConfirm} className='w-full max-w-sm'>
+          <Button
+            onClick={handleConfirm}
+            className='w-full max-w-sm'
+            isLoading={isConfirmLoading}
+          >
             Confirm
           </Button>
         </div>
       )}
       {!photo && (
-        <Button onClick={capture} className='w-full max-w-sm'>
+        <Button
+          onClick={capture}
+          className='w-full max-w-sm'
+          disabled={!isWebcamLoaded}
+        >
           Take a picture
         </Button>
       )}
