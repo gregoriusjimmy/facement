@@ -1,62 +1,179 @@
-import { useCallback, useRef, useState } from 'react';
-import Webcam from 'react-webcam';
+import { useState } from 'react'
 
-import Button from '@/components/buttons/Button';
-import InputField from '@/components/input-field/InputField';
-import Layout from '@/components/layout/Layout';
-import ButtonLink from '@/components/links/ButtonLink';
-import PrimaryLink from '@/components/links/PrimaryLink';
-import Seo from '@/components/Seo';
-import Stepper from '@/components/stepper/Stepper';
+import { usePost } from '@/hooks/usePost'
 
-import SuccessSVG from '~/svg/success.svg';
+import Button from '@/components/buttons/Button'
+import FaceCam from '@/components/facecam/FaceCam'
+import InputField from '@/components/input-field/InputField'
+import Layout from '@/components/layout/Layout'
+import ButtonLink from '@/components/links/ButtonLink'
+import PrimaryLink from '@/components/links/PrimaryLink'
+import Seo from '@/components/Seo'
+import Stepper from '@/components/stepper/Stepper'
+
+import {
+  IAccountExistRes,
+  IAccountExistSpec,
+  IAuthRegisterRes,
+  IAuthRegisterSpec,
+  IFaceApiValidRes,
+  IFaceApiValidSpec,
+} from '@/types/networkTypes'
+
+import SuccessSVG from '~/svg/success.svg'
+
+type TKeyFormData =
+  | 'email'
+  | 'password'
+  | 'confirmPassword'
+  | 'phoneNumber'
+  | 'photo'
+
+type TFormError = {
+  [k in TKeyFormData]: { isError: boolean; message: string }
+}
+
+const formErrorDefault = {
+  email: { isError: false, message: '' },
+  password: { isError: false, message: '' },
+  confirmPassword: { isError: false, message: '' },
+  phoneNumber: { isError: false, message: '' },
+  photo: { isError: false, message: '' },
+}
+
 export default function SignUpPage() {
-  const [activeStep, setActiveStep] = useState(3);
-  const webcamRef = useRef<Webcam>(null);
+  const [activeStep, setActiveStep] = useState(1)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [phoneNumber, setPhoneNumber] = useState('')
+  const [photo, setPhoto] = useState('')
+  const [isConfirmPhotoLoading, setIsConfirmPhotoLoading] = useState(false)
+  const [formError, setFormError] = useState<TFormError>(formErrorDefault)
 
-  const capture = useCallback(() => {
-    const imageSrc = webcamRef?.current?.getScreenshot();
-    console.log(imageSrc);
-  }, [webcamRef]);
+  const postAccountExist = usePost<IAccountExistRes, IAccountExistSpec>(
+    'accounts/exist'
+  )
+  const postFaceApiValid = usePost<IFaceApiValidRes, IFaceApiValidSpec>(
+    'face-api/valid'
+  )
+  const postAuthRegister = usePost<IAuthRegisterRes, IAuthRegisterSpec>(
+    'auth/register'
+  )
 
-  const videoConstraints = {
-    width: 640,
-    height: 640,
-    facingMode: 'user',
-  };
+  const setFormDataToError = (key: TKeyFormData, message = '') => {
+    setFormError({ ...formError, [key]: { isError: true, message } })
+  }
+
+  const isStepOneValid = async () => {
+    try {
+      const res = await postAccountExist({
+        email,
+      })
+      if (res.isAccountExist) {
+        setFormDataToError('email', res.message)
+        return false
+      }
+    } catch (error) {
+      console.error(error instanceof Error ? error.message : error)
+      setFormDataToError('email', 'Server error, please try again later')
+      return false
+    }
+    if (password !== confirmPassword) {
+      setFormDataToError('confirmPassword', "password didn't match")
+      return false
+    }
+    setFormError(formErrorDefault)
+    return true
+  }
+
+  const isStepTwoValid = () => {
+    if (phoneNumber.length > 15) {
+      setFormDataToError('phoneNumber', 'Phone number maximum length is 15')
+      return false
+    }
+    if (phoneNumber.length < 10) {
+      setFormDataToError('phoneNumber', 'Phone number minimum length is 10')
+      return false
+    }
+    setFormError(formErrorDefault)
+    return true
+  }
+
+  const isStepThreeValid = async () => {
+    try {
+      setIsConfirmPhotoLoading(true)
+      const res = await postFaceApiValid({ photo: photo })
+      if (!res.isValid) {
+        setIsConfirmPhotoLoading(false)
+        setFormDataToError('photo', res.message)
+        return false
+      }
+      await postAuthRegister({ email, password, phoneNumber, photo })
+    } catch (error) {
+      console.error(error instanceof Error ? error.message : error)
+      setFormDataToError('photo', 'Server error, please try again later')
+      setIsConfirmPhotoLoading(false)
+      return false
+    }
+    setFormError(formErrorDefault)
+    return true
+  }
+
+  const validateForm = async (e?: React.FormEvent<HTMLFormElement>) => {
+    e?.preventDefault()
+    if (activeStep === 1 && !(await isStepOneValid())) return
+    if (activeStep === 2 && !isStepTwoValid()) return
+    if (activeStep === 3 && !(await isStepThreeValid())) return
+
+    setActiveStep(activeStep + 1)
+  }
 
   return (
     <Layout>
       <Seo />
       <main className='layout relative overflow-hidden'>
-        <div className='md:min-h-main mt-4 flex flex-col items-center md:mt-10 '>
+        <div className='min-h-main mt-2 flex flex-col items-center justify-center md:justify-start'>
           <Stepper
             activeStep={activeStep}
-            steps={['111', '222', '333']}
-            className='mb-8'
+            steps={['Fill in form', 'Phone number', 'Take a picture', 'Finish']}
+            className='mb-8 md:mt-[100px]'
           />
           {activeStep === 1 && (
-            <form className='card mb-4'>
+            <form className='card mb-4' onSubmit={(e) => validateForm(e)}>
               <h3 className='mb-8 text-center md:mb-10'>Create an account</h3>
               <div className='mb-8 space-y-4 md:mb-10'>
                 <InputField
                   label='Email'
                   type='email'
-                  placeholder='email@mail.com'
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  error={formError.email}
+                  required
                 />
                 <InputField
                   label='Password'
                   type='password'
-                  placeholder='*********'
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  error={formError.password}
+                  required
+                  minLength={6}
                 />
                 <InputField
                   label='Confirm Password'
                   type='password'
-                  placeholder='*********'
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  error={formError.confirmPassword}
+                  required
+                  minLength={6}
                 />
               </div>
               <div className='flex flex-col items-center space-y-4'>
-                <Button className=' w-full max-w-sm'>Next</Button>
+                <Button type='submit' className='w-full max-w-sm'>
+                  Next
+                </Button>
                 <p className='text-center'>
                   Already have an account?{' '}
                   <PrimaryLink href='/signin'>Sign in</PrimaryLink>
@@ -71,17 +188,30 @@ export default function SignUpPage() {
                 Please remember your phone number, since it will be used when
                 you did the transaction
               </p>
-              <InputField
-                label='Phone Number'
-                placeholder='(e.g. 08274852922 or 628274852922)'
-                type='number'
-              />
-              <Button className='w-full max-w-sm'>Next</Button>
+              <form
+                className='flex w-full flex-col items-center'
+                onSubmit={(e) => validateForm(e)}
+              >
+                <InputField
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  label='Phone Number'
+                  placeholder='(e.g. 08274852922 or 628274852922)'
+                  type='number'
+                  required
+                  maxLength={15}
+                  minLength={10}
+                  error={formError.phoneNumber}
+                />
+                <Button type='submit' className='mt-10 w-full max-w-sm'>
+                  Next
+                </Button>
+              </form>
             </div>
           )}
           {activeStep === 3 && (
-            <div className='card flex max-w-3xl flex-col items-center space-y-10'>
-              {/* <h3 className='text-center'>Let’s take a picture of yourself</h3>
+            <div className='card mb-10 flex max-w-3xl flex-col items-center space-y-10'>
+              <h3 className='text-center'>Let’s take a picture of yourself</h3>
               <p className='text-center'>
                 You will use your face to authenticate every time you complete a
                 transaction
@@ -89,20 +219,21 @@ export default function SignUpPage() {
               <p className='text-center'>
                 Please make sure your face is not covered
               </p>
-              <div className='relative w-[300px]'>
-                <img className='absolute' src='/images/overlay.png' />
-                <Webcam
-                  audio={false}
-                  ref={webcamRef}
-                  screenshotQuality={1}
-                  className='w-full rounded'
-                  screenshotFormat='image/jpeg'
-                  videoConstraints={videoConstraints}
-                />
-              </div>
-              <Button onClick={capture} className='w-full max-w-sm'>
-                Take a picture
-              </Button> */}
+              {formError.photo.isError && (
+                <p className='text-sm text-red-500'>
+                  {formError.photo.message}
+                </p>
+              )}
+              <FaceCam
+                handleCapture={(imageSrc) => setPhoto(imageSrc)}
+                handleConfirm={validateForm}
+                handleTryAgain={() => setFormError(formErrorDefault)}
+                isConfirmLoading={isConfirmPhotoLoading}
+              />
+            </div>
+          )}
+          {activeStep === 4 && (
+            <div className='card flex flex-col items-center space-y-10'>
               <h3 className='text-center'>
                 Congratulations, your account has been created
               </h3>
@@ -118,5 +249,5 @@ export default function SignUpPage() {
         </div>
       </main>
     </Layout>
-  );
+  )
 }
