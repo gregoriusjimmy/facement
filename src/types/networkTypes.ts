@@ -1,26 +1,18 @@
-export interface IStandardResponse {
-  ok: boolean
-  message: string
-  token?: string
-}
+import { TTransaction } from './common'
 
-export interface IAccountExistRes extends IStandardResponse {
+export interface IAccountExistRes {
   isAccountExist: boolean
 }
 
 export interface IAccountExistSpec {
   email: string
 }
-export interface IFaceApiValidRes extends IStandardResponse {
+export interface IFaceApiValidRes {
   isValid: boolean
 }
 
 export interface IFaceApiValidSpec {
   photo: string
-}
-
-export interface IAuthRegisterRes extends IStandardResponse {
-  token: string
 }
 
 export interface IAuthRegisterSpec {
@@ -30,7 +22,7 @@ export interface IAuthRegisterSpec {
   photo: string
 }
 
-export interface IAuthLoginRes extends IStandardResponse {
+export interface IAuthLoginRes {
   token: string
 }
 
@@ -39,6 +31,25 @@ export interface IAuthLoginSpec {
   password: string
 }
 
-export interface ITokenVerifyRes extends IStandardResponse {
+export interface ITokenVerifyRes {
   isVerified: boolean
+}
+export interface ITopUpSpec {
+  accountId: number
+  amount: number
+}
+
+export interface ITopUpRes {
+  transaction: TTransaction
+}
+
+export interface IAccountGetRes {
+  account: {
+    id: number
+    email: string
+    balance: number
+  }
+}
+export interface IAccountGetBalanceRes {
+  balance: number
 }

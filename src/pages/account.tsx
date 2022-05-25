@@ -1,13 +1,50 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react'
 
-import Button from '@/components/buttons/Button';
-import Layout from '@/components/layout/Layout';
-import ButtonLink from '@/components/links/ButtonLink';
-import { Modal } from '@/components/modal/modal';
-import Seo from '@/components/Seo';
+import { useAccount } from '@/hooks/useAccount'
+import { usePost } from '@/hooks/usePost'
+
+import Button from '@/components/buttons/Button'
+import Layout from '@/components/layout/Layout'
+import ButtonLink from '@/components/links/ButtonLink'
+import Modal from '@/components/modal/Modal'
+import Seo from '@/components/Seo'
+
+import {
+  IAccountGetBalanceRes,
+  ITopUpRes,
+  ITopUpSpec,
+} from '@/types/networkTypes'
 
 export default function AccountPage() {
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(false)
+  const [topUpAmount, setTopUpAmount] = useState(0)
+  const account = useAccount()
+  const [balance, setBalance] = useState(account?.balance || 0)
+  const postTopUp = usePost<ITopUpRes, ITopUpSpec>('transaction/topUp')
+  const postAccountGetBalance = usePost<IAccountGetBalanceRes, null>(
+    'account/get/balance'
+  )
+
+  const handleTopUpSubmit = async () => {
+    try {
+      if (account) {
+        await postTopUp({
+          accountId: account.id,
+          amount: topUpAmount,
+        })
+        const res = await postAccountGetBalance(null)
+        setBalance(res.balance)
+        setShowModal(false)
+      } else {
+        alert('Error account not found')
+      }
+    } catch (error) {
+      console.error(error instanceof Error ? error.message : error)
+    }
+  }
+  useEffect(() => {
+    if (account) setBalance(account.balance)
+  }, [account])
 
   return (
     <Layout>
@@ -20,16 +57,22 @@ export default function AccountPage() {
             <input
               className='-mr-14 font-bold text-primary-500 focus:outline-none'
               type='number'
+              value={topUpAmount}
+              onChange={(e) => setTopUpAmount(parseInt(e.target.value))}
             />
           </div>
-          <Button variant='secondary'>CONFIRM</Button>
+          <Button variant='secondary' onClick={() => handleTopUpSubmit()}>
+            CONFIRM
+          </Button>
         </div>
       </Modal>
       <main className='layout'>
         <div className='mb-4 flex flex-col space-y-10 md:flex-row md:items-center'>
           <div className='flex flex-col md:w-1/2'>
             <h3 className='mb-2'>Balance</h3>
-            <h1 className='mb-4 text-7xl font-bold text-primary-500'>$150</h1>
+            <h1 className='mb-4 text-7xl font-bold text-primary-500'>
+              {balance}
+            </h1>
             <Button
               className='max-w-xs'
               onClick={() => setShowModal(true)}
@@ -47,5 +90,5 @@ export default function AccountPage() {
         </div>
       </main>
     </Layout>
-  );
+  )
 }

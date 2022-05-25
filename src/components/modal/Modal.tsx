@@ -1,27 +1,28 @@
-import React, { ReactNode, useEffect, useState } from 'react';
-import ReactDOM from 'react-dom';
+import React, { ReactNode, useEffect, useState } from 'react'
+import ReactDOM from 'react-dom'
 
-import clsxm from '@/lib/clsxm';
+import clsxm from '@/lib/clsxm'
+
 type Props = {
-  show: boolean;
-  children: ReactNode;
-  className?: string;
-  onClose: () => void;
-};
+  show: boolean
+  children: ReactNode
+  className?: string
+  onClose: () => void
+}
 
-export const Modal = ({ show, children, className, onClose }: Props) => {
-  const [isBrowser, setIsBrowser] = useState(false);
+const Modal = ({ show, children, className, onClose }: Props) => {
+  const [isBrowser, setIsBrowser] = useState(false)
 
   useEffect(() => {
-    setIsBrowser(true);
-  }, []);
+    setIsBrowser(true)
+  }, [])
 
   const handleCloseClick = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
   ) => {
-    e.preventDefault();
-    onClose();
-  };
+    e.preventDefault()
+    onClose()
+  }
 
   const modalContent = show ? (
     <div
@@ -43,14 +44,16 @@ export const Modal = ({ show, children, className, onClose }: Props) => {
         {children}
       </div>
     </div>
-  ) : null;
+  ) : null
 
   if (isBrowser) {
     return ReactDOM.createPortal(
       modalContent,
       document.getElementById('modal-root')!
-    );
+    )
   } else {
-    return null;
+    return null
   }
-};
+}
+
+export default Modal

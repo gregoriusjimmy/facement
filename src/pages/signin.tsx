@@ -2,7 +2,7 @@ import { useRouter } from 'next/router'
 import { FormEvent, useEffect, useState } from 'react'
 
 import { useMediaQuery } from '@/hooks/useMediaQuery'
-import { usePost } from '@/hooks/usePost'
+import { saveToken, usePost } from '@/hooks/usePost'
 
 import Button from '@/components/buttons/Button'
 import InputField from '@/components/input-field/InputField'
@@ -10,9 +10,9 @@ import Layout from '@/components/layout/Layout'
 import PrimaryLink from '@/components/links/PrimaryLink'
 import Seo from '@/components/Seo'
 
+import { handleAxiosError } from '@/utils/common'
+
 import {
-  IAccountExistRes,
-  IAccountExistSpec,
   IAuthLoginRes,
   IAuthLoginSpec,
   ITokenVerifyRes as IVerifyTokenRes,
@@ -38,9 +38,6 @@ export default function SignInPage() {
   const [isLoadingSubmit, setIsLoadingSubmit] = useState(false)
 
   const postAuthLogin = usePost<IAuthLoginRes, IAuthLoginSpec>('/auth/login')
-  const postAccountExist = usePost<IAccountExistRes, IAccountExistSpec>(
-    'accounts/exist'
-  )
   const postIsTokenVerify = usePost<IVerifyTokenRes, null>('auth/verify/token')
 
   const isMd = useMediaQuery('(max-width: 768px)')
@@ -53,8 +50,8 @@ export default function SignInPage() {
   useEffect(() => {
     const fetchVerifyToken = async () => {
       try {
-        const res = await postIsTokenVerify(null)
-        if (res.ok && res.isVerified) router.push('/account')
+        const { isVerified } = await postIsTokenVerify(null)
+        if (isVerified) router.push('/account')
       } catch (error) {
         console.error(error instanceof Error ? error.message : error)
       }
@@ -62,38 +59,21 @@ export default function SignInPage() {
     fetchVerifyToken()
   }, [postIsTokenVerify, router])
 
-  const isFormDataValid = async () => {
-    try {
-      const res = await postAccountExist({
-        email,
-      })
-      if (!res.isAccountExist) {
-        setFormDataToError('email', res.message)
-        return false
-      }
-    } catch (error) {
-      console.error(error instanceof Error ? error.message : error)
-      setFormDataToError('email', 'Server error, please try again later')
-      return false
-    }
-
-    setFormError(formErrorDefault)
-    return true
-  }
-
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-
-    if (await isFormDataValid()) {
-      try {
-        setIsLoadingSubmit(true)
-        const res = await postAuthLogin({ email, password })
-        if (res.ok) router.push('/account')
-      } catch (error) {
-        console.error(error instanceof Error ? error.message : error)
-      } finally {
-        setIsLoadingSubmit(false)
-      }
+    try {
+      setIsLoadingSubmit(true)
+      const { token } = await postAuthLogin({ email, password })
+      saveToken(token)
+      setFormError(formErrorDefault)
+      router.push('/account')
+    } catch (error) {
+      handleAxiosError(error, (axiosErr) => {
+        setFormDataToError('email', axiosErr.response?.data.message)
+      })
+      console.error(error instanceof Error ? error.message : error)
+    } finally {
+      setIsLoadingSubmit(false)
     }
   }
 

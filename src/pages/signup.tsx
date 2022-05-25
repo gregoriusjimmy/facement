@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { usePost } from '@/hooks/usePost'
+import { deleteToken, usePost } from '@/hooks/usePost'
 
 import Button from '@/components/buttons/Button'
 import FaceCam from '@/components/facecam/FaceCam'
@@ -14,7 +14,6 @@ import Stepper from '@/components/stepper/Stepper'
 import {
   IAccountExistRes,
   IAccountExistSpec,
-  IAuthRegisterRes,
   IAuthRegisterSpec,
   IFaceApiValidRes,
   IFaceApiValidSpec,
@@ -57,9 +56,7 @@ export default function SignUpPage() {
   const postFaceApiValid = usePost<IFaceApiValidRes, IFaceApiValidSpec>(
     'face-api/valid'
   )
-  const postAuthRegister = usePost<IAuthRegisterRes, IAuthRegisterSpec>(
-    'auth/register'
-  )
+  const postAuthRegister = usePost<null, IAuthRegisterSpec>('auth/register')
 
   const setFormDataToError = (key: TKeyFormData, message = '') => {
     setFormError({ ...formError, [key]: { isError: true, message } })
@@ -67,11 +64,11 @@ export default function SignUpPage() {
 
   const isStepOneValid = async () => {
     try {
-      const res = await postAccountExist({
+      const { isAccountExist } = await postAccountExist({
         email,
       })
-      if (res.isAccountExist) {
-        setFormDataToError('email', res.message)
+      if (isAccountExist) {
+        setFormDataToError('email', 'Email already in used')
         return false
       }
     } catch (error) {
@@ -80,7 +77,7 @@ export default function SignUpPage() {
       return false
     }
     if (password !== confirmPassword) {
-      setFormDataToError('confirmPassword', "password didn't match")
+      setFormDataToError('confirmPassword', "Password didn't match")
       return false
     }
     setFormError(formErrorDefault)
@@ -103,13 +100,19 @@ export default function SignUpPage() {
   const isStepThreeValid = async () => {
     try {
       setIsConfirmPhotoLoading(true)
-      const res = await postFaceApiValid({ photo: photo })
-      if (!res.isValid) {
+      const { isValid } = await postFaceApiValid({ photo: photo })
+      if (!isValid) {
         setIsConfirmPhotoLoading(false)
-        setFormDataToError('photo', res.message)
+        setFormDataToError('photo', 'Face is not detected, please try again')
         return false
       }
-      await postAuthRegister({ email, password, phoneNumber, photo })
+      await postAuthRegister({
+        email,
+        password,
+        phoneNumber,
+        photo,
+      })
+      deleteToken()
     } catch (error) {
       console.error(error instanceof Error ? error.message : error)
       setFormDataToError('photo', 'Server error, please try again later')
