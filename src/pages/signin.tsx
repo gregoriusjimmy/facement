@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router'
 import { FormEvent, useEffect, useState } from 'react'
 
+import { useFormError } from '@/hooks/useFormError'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { saveToken, usePost } from '@/hooks/usePost'
 
@@ -22,30 +23,20 @@ import SignInSVG from '~/svg/signin.svg'
 
 type TKeyFormData = 'email' | 'password'
 
-type TFormError = {
-  [k in TKeyFormData]: { isError: boolean; message: string }
-}
-
-const formErrorDefault = {
-  email: { isError: false, message: '' },
-  password: { isError: false, message: '' },
-}
+const keyFormData = ['email', 'password']
 
 export default function SignInPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [formError, setFormError] = useState<TFormError>(formErrorDefault)
+
   const [isLoadingSubmit, setIsLoadingSubmit] = useState(false)
+  const formError = useFormError<TKeyFormData>(keyFormData)
 
   const postAuthLogin = usePost<IAuthLoginRes, IAuthLoginSpec>('/auth/login')
   const postIsTokenVerify = usePost<IVerifyTokenRes, null>('auth/verify/token')
 
   const isMd = useMediaQuery('(max-width: 768px)')
   const router = useRouter()
-
-  const setFormDataToError = (key: TKeyFormData, message = '') => {
-    setFormError({ ...formError, [key]: { isError: true, message } })
-  }
 
   useEffect(() => {
     const fetchVerifyToken = async () => {
@@ -65,11 +56,11 @@ export default function SignInPage() {
       setIsLoadingSubmit(true)
       const { token } = await postAuthLogin({ email, password })
       saveToken(token)
-      setFormError(formErrorDefault)
+      formError.setDataToDefault()
       router.push('/account')
     } catch (error) {
       handleAxiosError(error, (axiosErr) => {
-        setFormDataToError('email', axiosErr.response?.data.message)
+        formError.setDataToError('email', axiosErr.response?.data.message)
       })
       console.error(error instanceof Error ? error.message : error)
     } finally {
@@ -95,7 +86,7 @@ export default function SignInPage() {
                 type='email'
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                error={formError.email}
+                error={formError.data.email}
                 required
               />
               <InputField
@@ -103,7 +94,7 @@ export default function SignInPage() {
                 type='password'
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                error={formError.password}
+                error={formError.data.password}
                 required
                 minLength={6}
               />

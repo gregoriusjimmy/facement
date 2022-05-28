@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import { useFormError } from '@/hooks/useFormError'
 import { deleteToken, usePost } from '@/hooks/usePost'
 
 import Button from '@/components/buttons/Button'
@@ -28,17 +29,13 @@ type TKeyFormData =
   | 'phoneNumber'
   | 'photo'
 
-type TFormError = {
-  [k in TKeyFormData]: { isError: boolean; message: string }
-}
-
-const formErrorDefault = {
-  email: { isError: false, message: '' },
-  password: { isError: false, message: '' },
-  confirmPassword: { isError: false, message: '' },
-  phoneNumber: { isError: false, message: '' },
-  photo: { isError: false, message: '' },
-}
+const keyFormData = [
+  'email',
+  'password',
+  'confirmPassword',
+  'phoneNumber',
+  'photo',
+]
 
 export default function SignUpPage() {
   const [activeStep, setActiveStep] = useState(1)
@@ -48,19 +45,15 @@ export default function SignUpPage() {
   const [phoneNumber, setPhoneNumber] = useState('')
   const [photo, setPhoto] = useState('')
   const [isConfirmPhotoLoading, setIsConfirmPhotoLoading] = useState(false)
-  const [formError, setFormError] = useState<TFormError>(formErrorDefault)
+  const formError = useFormError<TKeyFormData>(keyFormData)
 
   const postAccountExist = usePost<IAccountExistRes, IAccountExistSpec>(
-    'accounts/exist'
+    'account/exist'
   )
   const postFaceApiValid = usePost<IFaceApiValidRes, IFaceApiValidSpec>(
     'face-api/valid'
   )
   const postAuthRegister = usePost<null, IAuthRegisterSpec>('auth/register')
-
-  const setFormDataToError = (key: TKeyFormData, message = '') => {
-    setFormError({ ...formError, [key]: { isError: true, message } })
-  }
 
   const isStepOneValid = async () => {
     try {
@@ -68,32 +61,38 @@ export default function SignUpPage() {
         email,
       })
       if (isAccountExist) {
-        setFormDataToError('email', 'Email already in used')
+        formError.setDataToError('email', 'Email already in used')
         return false
       }
     } catch (error) {
       console.error(error instanceof Error ? error.message : error)
-      setFormDataToError('email', 'Server error, please try again later')
+      formError.setDataToError('email', 'Server error, please try again later')
       return false
     }
     if (password !== confirmPassword) {
-      setFormDataToError('confirmPassword', "Password didn't match")
+      formError.setDataToError('confirmPassword', "Password didn't match")
       return false
     }
-    setFormError(formErrorDefault)
+    formError.setDataToDefault()
     return true
   }
 
   const isStepTwoValid = () => {
     if (phoneNumber.length > 15) {
-      setFormDataToError('phoneNumber', 'Phone number maximum length is 15')
+      formError.setDataToError(
+        'phoneNumber',
+        'Phone number maximum length is 15'
+      )
       return false
     }
     if (phoneNumber.length < 10) {
-      setFormDataToError('phoneNumber', 'Phone number minimum length is 10')
+      formError.setDataToError(
+        'phoneNumber',
+        'Phone number minimum length is 10'
+      )
       return false
     }
-    setFormError(formErrorDefault)
+    formError.setDataToDefault()
     return true
   }
 
@@ -103,7 +102,10 @@ export default function SignUpPage() {
       const { isValid } = await postFaceApiValid({ photo: photo })
       if (!isValid) {
         setIsConfirmPhotoLoading(false)
-        setFormDataToError('photo', 'Face is not detected, please try again')
+        formError.setDataToError(
+          'photo',
+          'Face is not detected, please try again'
+        )
         return false
       }
       await postAuthRegister({
@@ -115,16 +117,17 @@ export default function SignUpPage() {
       deleteToken()
     } catch (error) {
       console.error(error instanceof Error ? error.message : error)
-      setFormDataToError('photo', 'Server error, please try again later')
+      formError.setDataToError('photo', 'Server error, please try again later')
       setIsConfirmPhotoLoading(false)
       return false
     }
-    setFormError(formErrorDefault)
+    formError.setDataToDefault()
     return true
   }
 
   const validateForm = async (e?: React.FormEvent<HTMLFormElement>) => {
     e?.preventDefault()
+
     if (activeStep === 1 && !(await isStepOneValid())) return
     if (activeStep === 2 && !isStepTwoValid()) return
     if (activeStep === 3 && !(await isStepThreeValid())) return
@@ -151,7 +154,7 @@ export default function SignUpPage() {
                   type='email'
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  error={formError.email}
+                  error={formError.data.email}
                   required
                 />
                 <InputField
@@ -159,7 +162,7 @@ export default function SignUpPage() {
                   type='password'
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  error={formError.password}
+                  error={formError.data.password}
                   required
                   minLength={6}
                 />
@@ -168,7 +171,7 @@ export default function SignUpPage() {
                   type='password'
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  error={formError.confirmPassword}
+                  error={formError.data.confirmPassword}
                   required
                   minLength={6}
                 />
@@ -201,10 +204,7 @@ export default function SignUpPage() {
                   label='Phone Number'
                   placeholder='(e.g. 08274852922 or 628274852922)'
                   type='number'
-                  required
-                  maxLength={15}
-                  minLength={10}
-                  error={formError.phoneNumber}
+                  error={formError.data.phoneNumber}
                 />
                 <Button type='submit' className='mt-10 w-full max-w-sm'>
                   Next
@@ -222,15 +222,15 @@ export default function SignUpPage() {
               <p className='text-center'>
                 Please make sure your face is not covered
               </p>
-              {formError.photo.isError && (
+              {formError.data && (
                 <p className='text-sm text-red-500'>
-                  {formError.photo.message}
+                  {formError.data.photo.message}
                 </p>
               )}
               <FaceCam
                 handleCapture={(imageSrc) => setPhoto(imageSrc)}
                 handleConfirm={validateForm}
-                handleTryAgain={() => setFormError(formErrorDefault)}
+                handleTryAgain={() => formError.setDataToDefault()}
                 isConfirmLoading={isConfirmPhotoLoading}
               />
             </div>
