@@ -2,6 +2,8 @@ import { useRouter } from 'next/router'
 import * as React from 'react'
 import { MdAccountCircle } from 'react-icons/md'
 
+import { useAccount } from '@/hooks/useAccount'
+
 import Button from '../buttons/Button'
 import ButtonLink from '../links/ButtonLink'
 import UnstyledLink from '../links/UnstyledLink'
@@ -9,20 +11,23 @@ import UnstyledLink from '../links/UnstyledLink'
 import Logo from '~/svg/facement-logo.svg'
 import LogoBlue from '~/svg/facement-logo-primary.svg'
 export default function Layout({ children }: { children: React.ReactNode }) {
-  const mustLoginRoute = ['/account', '/demo']
+  const account = useAccount()
   const router = useRouter()
+  const whiteHeaderRoutes = ['/account', '/demo']
   return (
     <div>
-      {mustLoginRoute.includes(router.pathname) ? (
+      {whiteHeaderRoutes.includes(router.pathname) ? (
         <div className='bg-white'>
           <nav className='layout flex h-20 items-center justify-between py-4'>
             <UnstyledLink href='/'>
               <LogoBlue className='h-11 text-8xl sm:text-9xl' />
             </UnstyledLink>
-            <Button variant='ghost'>
-              <MdAccountCircle className='mr-2 text-3xl text-primary-500' />
-              <p>gregoriusjimmy</p>
-            </Button>
+            {account?.email && (
+              <Button variant='ghost'>
+                <MdAccountCircle className='mr-2 text-3xl text-primary-500' />
+                <p>{account.email}</p>
+              </Button>
+            )}
           </nav>
         </div>
       ) : (
@@ -44,7 +49,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </nav>
         </div>
       )}
-
       {children}
     </div>
   )

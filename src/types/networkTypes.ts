@@ -7,12 +7,24 @@ export interface IAccountExistRes {
 export interface IAccountExistSpec {
   email: string
 }
-export interface IFaceApiValidRes {
+
+export interface IAccountExistPhoneNumberSpec {
+  phoneNumber: string
+}
+
+export interface IFaceApiValidateSpec {
+  photo: string
+}
+
+export interface IFaceApiValidateRes {
   isValid: boolean
 }
 
-export interface IFaceApiValidSpec {
-  photo: string
+export interface IValidatePhoneNumberSpec {
+  phoneNumber: string
+}
+export interface IValidatePhoneNumberRes {
+  isValid: boolean
 }
 
 export interface IAuthRegisterSpec {
@@ -41,6 +53,17 @@ export interface ITopUpSpec {
 
 export interface ITopUpRes {
   transaction: TTransaction
+  balance: number
+}
+export interface IPaySpec {
+  phoneNumber: string
+  photo: string
+  amount: number
+}
+
+export interface IPayRes {
+  transaction: TTransaction
+  balance: number
 }
 
 export interface IAccountGetRes {
@@ -49,7 +72,4 @@ export interface IAccountGetRes {
     email: string
     balance: number
   }
-}
-export interface IAccountGetBalanceRes {
-  balance: number
 }

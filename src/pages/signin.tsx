@@ -33,7 +33,9 @@ export default function SignInPage() {
   const formError = useFormError<TKeyFormData>(keyFormData)
 
   const postAuthLogin = usePost<IAuthLoginRes, IAuthLoginSpec>('/auth/login')
-  const postIsTokenVerify = usePost<IVerifyTokenRes, null>('auth/verify/token')
+  const postAuthVerifyToken = usePost<IVerifyTokenRes, null>(
+    'auth/verify/token'
+  )
 
   const isMd = useMediaQuery('(max-width: 768px)')
   const router = useRouter()
@@ -41,14 +43,14 @@ export default function SignInPage() {
   useEffect(() => {
     const fetchVerifyToken = async () => {
       try {
-        const { isVerified } = await postIsTokenVerify(null)
+        const { isVerified } = await postAuthVerifyToken(null)
         if (isVerified) router.push('/account')
       } catch (error) {
         console.error(error instanceof Error ? error.message : error)
       }
     }
     fetchVerifyToken()
-  }, [postIsTokenVerify, router])
+  }, [postAuthVerifyToken, router])
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()

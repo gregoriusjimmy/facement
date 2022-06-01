@@ -10,11 +10,7 @@ import Modal from '@/components/modal/Modal'
 import Seo from '@/components/Seo'
 import { Spinner } from '@/components/spinner/Spinner'
 
-import {
-  IAccountGetBalanceRes,
-  ITopUpRes,
-  ITopUpSpec,
-} from '@/types/networkTypes'
+import { ITopUpRes, ITopUpSpec } from '@/types/networkTypes'
 
 export default function AccountPage() {
   const [showModal, setShowModal] = useState(false)
@@ -23,19 +19,15 @@ export default function AccountPage() {
   const account = useAccount()
   const [balance, setBalance] = useState(account?.balance || 0)
   const postTopUp = usePost<ITopUpRes, ITopUpSpec>('transaction/topUp')
-  const postAccountGetBalance = usePost<IAccountGetBalanceRes, null>(
-    'account/get/balance'
-  )
 
   const handleTopUpSubmit = async () => {
     try {
       if (account) {
         setIsLoading(true)
-        await postTopUp({
+        const res = await postTopUp({
           accountId: account.id,
           amount: parseInt(topUpAmount),
         })
-        const res = await postAccountGetBalance(null)
         setBalance(res.balance)
         setShowModal(false)
       } else {

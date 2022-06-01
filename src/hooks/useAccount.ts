@@ -16,7 +16,6 @@ export function useAccount() {
         setAccount(account)
       } catch (error) {
         console.error(error instanceof Error ? error.message : error)
-        throw error
       }
     }
     fetchAccountGet()

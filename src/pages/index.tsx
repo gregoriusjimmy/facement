@@ -1,15 +1,15 @@
-import * as React from 'react';
+import * as React from 'react'
 
-import Button from '@/components/buttons/Button';
-import Layout from '@/components/layout/Layout';
-import ButtonLink from '@/components/links/ButtonLink';
-import NextImage from '@/components/NextImage';
-import Seo from '@/components/Seo';
+import Button from '@/components/buttons/Button'
+import Layout from '@/components/layout/Layout'
+import ButtonLink from '@/components/links/ButtonLink'
+import NextImage from '@/components/NextImage'
+import Seo from '@/components/Seo'
 
-import ManStandOutSVG from '~/svg/man-stand-out.svg';
-import Work1SVG from '~/svg/work1.svg';
-import Work2SVG from '~/svg/work2.svg';
-import Work3SVG from '~/svg/work3.svg';
+import ManStandOutSVG from '~/svg/man-stand-out.svg'
+import Work1SVG from '~/svg/work1.svg'
+import Work2SVG from '~/svg/work2.svg'
+import Work3SVG from '~/svg/work3.svg'
 
 export default function HomePage() {
   return (
@@ -46,10 +46,11 @@ export default function HomePage() {
           <div className='layout z-10 space-y-5 lg:space-y-8 '>
             <h1 className='font-semibold lg:text-5xl'>Try Our Demo</h1>
             <p className='max-w-xs md:max-w-sm'>
-              Be the first to try our e-wallet account with face payment demo by
-              creating your account
+              Be the first to try our e-wallet account with face payment demo
             </p>
-            <Button variant='primary'>Create an account</Button>
+            <ButtonLink href='/demo' variant='primary'>
+              Try Face Payment Demo
+            </ButtonLink>
           </div>
           <ManStandOutSVG
             className='absolute bottom-[-100px] right-[-100px] z-0 h-[200px] w-full
@@ -106,5 +107,5 @@ export default function HomePage() {
         </section>
       </main>
     </Layout>
-  );
+  )
 }

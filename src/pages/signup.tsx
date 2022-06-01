@@ -16,8 +16,8 @@ import {
   IAccountExistRes,
   IAccountExistSpec,
   IAuthRegisterSpec,
-  IFaceApiValidRes,
-  IFaceApiValidSpec,
+  IFaceApiValidateRes,
+  IFaceApiValidateSpec,
 } from '@/types/networkTypes'
 
 import SuccessSVG from '~/svg/success.svg'
@@ -50,9 +50,10 @@ export default function SignUpPage() {
   const postAccountExist = usePost<IAccountExistRes, IAccountExistSpec>(
     'account/exist'
   )
-  const postFaceApiValid = usePost<IFaceApiValidRes, IFaceApiValidSpec>(
-    'face-api/valid'
-  )
+  const postFaceApiValidate = usePost<
+    IFaceApiValidateRes,
+    IFaceApiValidateSpec
+  >('face-api/validate')
   const postAuthRegister = usePost<null, IAuthRegisterSpec>('auth/register')
 
   const isStepOneValid = async () => {
@@ -99,9 +100,8 @@ export default function SignUpPage() {
   const isStepThreeValid = async () => {
     try {
       setIsConfirmPhotoLoading(true)
-      const { isValid } = await postFaceApiValid({ photo: photo })
+      const { isValid } = await postFaceApiValidate({ photo: photo })
       if (!isValid) {
-        setIsConfirmPhotoLoading(false)
         formError.setDataToError(
           'photo',
           'Face is not detected, please try again'
@@ -118,8 +118,9 @@ export default function SignUpPage() {
     } catch (error) {
       console.error(error instanceof Error ? error.message : error)
       formError.setDataToError('photo', 'Server error, please try again later')
-      setIsConfirmPhotoLoading(false)
       return false
+    } finally {
+      setIsConfirmPhotoLoading(false)
     }
     formError.setDataToDefault()
     return true
