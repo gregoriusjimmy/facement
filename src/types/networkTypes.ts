@@ -66,10 +66,10 @@ export interface IPayRes {
   balance: number
 }
 
-export interface IAccountGetRes {
-  account: {
-    id: number
-    email: string
-    balance: number
-  }
+export interface IGetTransactionsSpec {
+  accountId: number
+}
+
+export interface IGetTransactionsRes {
+  transactions: TTransaction[]
 }
