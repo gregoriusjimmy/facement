@@ -109,8 +109,9 @@ export default function DemoPage() {
         'phoneNumber',
         'Server error, please try again later'
       )
+      return
     } finally {
-      setIsConfirmPhoneNumberLoading(true)
+      setIsConfirmPhoneNumberLoading(false)
     }
     formError.setDataToDefault()
     setActiveStep(activeStep + 1)
@@ -139,6 +140,7 @@ export default function DemoPage() {
         formError.setDataToError('photo', axiosErr.response?.data.message)
       })
       console.error(error instanceof Error ? error.message : error)
+      return
     } finally {
       setIsConfirmPhotoLoading(false)
     }
@@ -311,7 +313,7 @@ export default function DemoPage() {
             </div>
           )}
           {activeStep === 6 && (
-            <div>
+            <div className='space-y-8'>
               <h3 className='text-center'>Let&apos;s Verify Yourself</h3>
               <p className='text-center'>
                 Take a picture of yourself and make sure your face is not
@@ -319,7 +321,7 @@ export default function DemoPage() {
               </p>
 
               {formError.data && (
-                <p className='text-sm text-red-500'>
+                <p className='text-center text-sm text-red-500'>
                   {formError.data.photo.message}
                 </p>
               )}
@@ -332,7 +334,7 @@ export default function DemoPage() {
             </div>
           )}
           {activeStep === 7 && (
-            <div>
+            <div className='space-y-8 text-center'>
               <h3 className='text-center'>Payment Successful</h3>
               <p className='text-center'>
                 Congratulations you have finished this face payment demo

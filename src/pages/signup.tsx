@@ -13,6 +13,7 @@ import Seo from '@/components/Seo'
 import Stepper from '@/components/stepper/Stepper'
 
 import {
+  IAccountExistPhoneNumberSpec,
   IAccountExistRes,
   IAccountExistSpec,
   IAuthRegisterSpec,
@@ -44,6 +45,8 @@ export default function SignUpPage() {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [phoneNumber, setPhoneNumber] = useState('')
   const [photo, setPhoto] = useState('')
+  const [isConfirmPhoneNumberLoading, setIsConfirmPhoneNumberLoading] =
+    useState(false)
   const [isConfirmPhotoLoading, setIsConfirmPhotoLoading] = useState(false)
   const formError = useFormError<TKeyFormData>(keyFormData)
 
@@ -55,6 +58,10 @@ export default function SignUpPage() {
     IFaceApiValidateSpec
   >('face-api/validate')
   const postAuthRegister = usePost<null, IAuthRegisterSpec>('auth/register')
+  const postIsAccountExistPhoneNumber = usePost<
+    IAccountExistRes,
+    IAccountExistPhoneNumberSpec
+  >('account/exist/phoneNumber')
 
   const isStepOneValid = async () => {
     try {
@@ -78,7 +85,7 @@ export default function SignUpPage() {
     return true
   }
 
-  const isStepTwoValid = () => {
+  const isStepTwoValid = async () => {
     if (phoneNumber.length > 15) {
       formError.setDataToError(
         'phoneNumber',
@@ -92,6 +99,26 @@ export default function SignUpPage() {
         'Phone number minimum length is 10'
       )
       return false
+    }
+    try {
+      setIsConfirmPhoneNumberLoading(true)
+      const res = await postIsAccountExistPhoneNumber({ phoneNumber })
+      if (res.isAccountExist) {
+        formError.setDataToError(
+          'phoneNumber',
+          'Phone number is already registered, please use another number'
+        )
+        return false
+      }
+    } catch (error) {
+      console.error(error instanceof Error ? error.message : error)
+      formError.setDataToError(
+        'phoneNumber',
+        'Server error, please try again later'
+      )
+      return false
+    } finally {
+      setIsConfirmPhoneNumberLoading(false)
     }
     formError.setDataToDefault()
     return true
@@ -130,7 +157,7 @@ export default function SignUpPage() {
     e?.preventDefault()
 
     if (activeStep === 1 && !(await isStepOneValid())) return
-    if (activeStep === 2 && !isStepTwoValid()) return
+    if (activeStep === 2 && !(await isStepTwoValid())) return
     if (activeStep === 3 && !(await isStepThreeValid())) return
 
     setActiveStep(activeStep + 1)
@@ -207,7 +234,11 @@ export default function SignUpPage() {
                   type='number'
                   error={formError.data.phoneNumber}
                 />
-                <Button type='submit' className='mt-10 w-full max-w-sm'>
+                <Button
+                  type='submit'
+                  className='mt-10 w-full max-w-sm'
+                  isLoading={isConfirmPhoneNumberLoading}
+                >
                   Next
                 </Button>
               </form>
