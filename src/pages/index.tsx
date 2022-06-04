@@ -1,6 +1,5 @@
 import * as React from 'react'
 
-import Button from '@/components/buttons/Button'
 import Layout from '@/components/layout/Layout'
 import ButtonLink from '@/components/links/ButtonLink'
 import NextImage from '@/components/NextImage'
@@ -36,7 +35,9 @@ export default function HomePage() {
                   <ButtonLink href='/signup' variant='secondary'>
                     Create an account
                   </ButtonLink>
-                  <Button variant='outline'>How it Works</Button>
+                  <ButtonLink href='#how-it-works' variant='outline'>
+                    How it Works
+                  </ButtonLink>
                 </div>
               </div>
             </div>
@@ -57,7 +58,7 @@ export default function HomePage() {
           max-w-md sm:top-[100px] sm:right-[-100px] sm:h-[400px] md:right-[-20px] lg:right-[150px] lg:h-[400px] lg:max-w-xl '
           />
         </section>
-        <section className='bg-primary-500'>
+        <section id='how-it-works' className='bg-primary-500'>
           <div className='layout space-y-12 py-16 text-white'>
             <h1 className='text-center sm:mb-14 md:mb-24 lg:mb-28'>
               How Facement Works
