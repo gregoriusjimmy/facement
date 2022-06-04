@@ -1,12 +1,12 @@
-import React from 'react';
+import React from 'react'
 
-import clsxm from '@/lib/clsxm';
+import clsxm from '@/lib/clsxm'
 type Props = {
-  label: string;
-  labelClassName?: string;
-  inputClassName?: string;
-  error?: { isError: boolean; message: string };
-} & React.ComponentPropsWithRef<'input'>;
+  label: string
+  labelClassName?: string
+  inputClassName?: string
+  error?: { isError: boolean; message: string }
+} & React.ComponentPropsWithRef<'input'>
 
 const InputField = React.forwardRef<HTMLInputElement, Props>(
   (
@@ -31,7 +31,7 @@ const InputField = React.forwardRef<HTMLInputElement, Props>(
           {error?.isError ? error?.message : ''}
         </span>
       </div>
-    );
+    )
   }
-);
-export default InputField;
+)
+export default InputField

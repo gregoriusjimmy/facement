@@ -1,12 +1,12 @@
-import styles from './Stepper.module.css';
+import styles from './Stepper.module.css'
 
-import clsxm from '@/lib/clsxm';
+import clsxm from '@/lib/clsxm'
 
 type Props = {
-  steps: string[];
-  activeStep: number;
-  className?: string;
-};
+  steps: string[]
+  activeStep: number
+  className?: string
+}
 
 const Stepper = ({ steps, activeStep, className }: Props) => {
   return (
@@ -70,7 +70,7 @@ const Stepper = ({ steps, activeStep, className }: Props) => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default Stepper;
+export default Stepper

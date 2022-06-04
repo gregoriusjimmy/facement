@@ -1,10 +1,10 @@
-import * as React from 'react';
+import * as React from 'react'
 
-import clsxm from '@/lib/clsxm';
+import clsxm from '@/lib/clsxm'
 
 import UnstyledLink, {
   UnstyledLinkProps,
-} from '@/components/links/UnstyledLink';
+} from '@/components/links/UnstyledLink'
 
 enum ButtonVariant {
   'primary',
@@ -16,9 +16,9 @@ enum ButtonVariant {
 }
 
 type ButtonLinkProps = {
-  isDarkBg?: boolean;
-  variant?: keyof typeof ButtonVariant;
-} & UnstyledLinkProps;
+  isDarkBg?: boolean
+  variant?: keyof typeof ButtonVariant
+} & UnstyledLinkProps
 
 const ButtonLink = React.forwardRef<HTMLAnchorElement, ButtonLinkProps>(
   (
@@ -83,8 +83,8 @@ const ButtonLink = React.forwardRef<HTMLAnchorElement, ButtonLinkProps>(
       >
         {children}
       </UnstyledLink>
-    );
+    )
   }
-);
+)
 
-export default ButtonLink;
+export default ButtonLink
