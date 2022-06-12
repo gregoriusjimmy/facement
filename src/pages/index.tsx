@@ -95,12 +95,10 @@ export default function HomePage() {
                 <Work3SVG className='h-[180px] w-full md:h-[280px]' />
               </div>
               <div className='md:w-1/2 lg:max-w-md'>
-                <h2 className='mb-4'>Create your account</h2>
+                <h2 className='mb-4'>Try our face payment demo</h2>
                 <p>
-                  Your account will be a place for you to store your e-wallet.
-                  In this step, we will ask you to take a picture of yourself.
-                  Later on, your picture will be used for validation when you
-                  did a transaction
+                  By clicking the Try Face Payment Demo button you will be
+                  experiencing how you will use facement in the future!
                 </p>
               </div>
             </div>
