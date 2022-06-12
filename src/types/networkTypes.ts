@@ -1,4 +1,4 @@
-import { TTransaction } from './common'
+import { TAccount, TTransaction } from './common'
 
 export interface IAccountExistRes {
   isAccountExist: boolean
@@ -72,4 +72,8 @@ export interface IGetTransactionsSpec {
 
 export interface IGetTransactionsRes {
   transactions: TTransaction[]
+}
+
+export interface IAccountGetRes {
+  account: TAccount
 }

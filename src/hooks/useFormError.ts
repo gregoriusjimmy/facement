@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 export type TFormError<T> = {
-  [k in T]: { isError: boolean; message: string }
+  [k in T as string]: { isError: boolean; message: string }
 }
 
 export function useFormError<T>(keys: Array<string>) {
