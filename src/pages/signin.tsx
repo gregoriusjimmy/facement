@@ -84,6 +84,7 @@ export default function SignInPage() {
             </h3>
             <div className='mb-8 space-y-4 md:mb-10'>
               <InputField
+                name='email'
                 label='Email'
                 type='email'
                 value={email}
@@ -92,6 +93,7 @@ export default function SignInPage() {
                 required
               />
               <InputField
+                name='password'
                 label='Password'
                 type='password'
                 value={password}
