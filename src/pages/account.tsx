@@ -28,11 +28,11 @@ export default function AccountPage() {
   const [transactions, setTransactions] = useState<TTransaction[]>([])
   const account = useAccount()
   const [balance, setBalance] = useState(account?.balance || 0)
-  const postTopUp = usePost<ITopUpRes, ITopUpSpec>('transaction/topUp')
+  const postTopUp = usePost<ITopUpRes, ITopUpSpec>('/transaction/topUp')
   const postTransactionsGet = usePost<
     IGetTransactionsRes,
     IGetTransactionsSpec
-  >('transaction/get/lastFive')
+  >('/transaction/get/lastFive')
 
   const handleTopUpSubmit = async () => {
     try {

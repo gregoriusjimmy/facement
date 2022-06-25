@@ -34,7 +34,7 @@ export default function SignInPage() {
 
   const postAuthLogin = usePost<IAuthLoginRes, IAuthLoginSpec>('/auth/login')
   const postAuthVerifyToken = usePost<IVerifyTokenRes, null>(
-    'auth/verify/token'
+    '/auth/verify/token'
   )
 
   const isMd = useMediaQuery('(max-width: 768px)')

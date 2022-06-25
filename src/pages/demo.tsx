@@ -56,11 +56,11 @@ export default function DemoPage() {
   const postFaceApiValidate = usePost<
     IFaceApiValidateRes,
     IFaceApiValidateSpec
-  >('face-api/validate')
+  >('/face-api/validate')
   const postIsAccountExistPhoneNumber = usePost<
     IAccountExistRes,
     IAccountExistPhoneNumberSpec
-  >('account/exist/phoneNumber')
+  >('/account/exist/phoneNumber')
   const postPay = usePost<IPayRes, IPaySpec>('transaction/pay')
   const formError = useFormError<TKeyFormData>(keyFormData)
 

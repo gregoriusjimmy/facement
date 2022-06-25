@@ -51,17 +51,17 @@ export default function SignUpPage() {
   const formError = useFormError<TKeyFormData>(keyFormData)
 
   const postAccountExist = usePost<IAccountExistRes, IAccountExistSpec>(
-    'account/exist'
+    '/account/exist'
   )
   const postFaceApiValidate = usePost<
     IFaceApiValidateRes,
     IFaceApiValidateSpec
-  >('face-api/validate')
-  const postAuthRegister = usePost<null, IAuthRegisterSpec>('auth/register')
+  >('/face-api/validate')
+  const postAuthRegister = usePost<null, IAuthRegisterSpec>('/auth/register')
   const postIsAccountExistPhoneNumber = usePost<
     IAccountExistRes,
     IAccountExistPhoneNumberSpec
-  >('account/exist/phoneNumber')
+  >('/account/exist/phoneNumber')
 
   const isStepOneValid = async () => {
     try {
